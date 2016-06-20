@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+    font-family: Lato, Calibri;
+}
+
+._404 {
+    text-align: center;
+    padding: 50px 50px;
+    background: #f0f0f0;
+    font-size: 23pt;
+    color: #333;
+}
