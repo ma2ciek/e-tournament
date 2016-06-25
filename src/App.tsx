@@ -1,19 +1,24 @@
 import * as React from 'react';
-import { NoMatch } from './components/NoMatch.tsx';
-import { Router, Redirect, Route, browserHistory, IndexRoute } from 'react-router';
-import { TournamentRouter } from './components/tournament/TournamentRouter.tsx';
-import { render} from 'react-dom';
-import { PlayerRouter } from './components/player/PlayerRouter.tsx';
+import { Home } from './main/components/Home.tsx';
+import { NoMatch } from './main/components/NoMatch.tsx';
+import { PlayerRouter } from './player/components/PlayerRouter.tsx';
+import { Router, Route, IndexRoute } from 'react-router';
+import { TournamentRouter } from './tournament/components/TournamentRouter.tsx';
 
-export default class App {
-    constructor() {
-        this.render();
-    }
+interface AppProps {
+    history: ReactRouterRedux.ReactRouterReduxHistory;
+}
 
-    private render() {
-        render((
-            <Router history={browserHistory}>
+class App extends React.Component<AppProps, {}> {
+
+    public render() {
+        return (
+            <Router history={this.props.history}>
                 <Route path='/'>
+                    <IndexRoute component={Home} />
+                    <Route path='home' component={Home}  />
+                    <Route path='home/' component={Home} />
+
                     <Route path='tournament' component={TournamentRouter} />
                     <Route path='tournament/*' component={TournamentRouter} />
 
@@ -23,8 +28,8 @@ export default class App {
                     <Route path='*' component={NoMatch} />
                 </Route>
             </Router>
-        ), document.querySelector('main'));
+        );
     }
 }
 
-window.addEventListener('DOMContentLoaded', () => new App());
+export default App;

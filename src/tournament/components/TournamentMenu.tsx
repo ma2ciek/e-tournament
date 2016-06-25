@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router';
-import { extend, IDictionary } from '../../util/common';
+import { IDictionary } from '../../util/common';
 
 export const style: IDictionary<string> = {
     'display': 'flex',
@@ -25,8 +25,12 @@ export class TournamentMenu extends React.Component<{}, {}> {
                 <div class='member-positions' style={stateStyle}>
                     <Link to='/tournament/positions'>Positions</Link>
                 </div>
-                <div class='tournament-matches' style={stateStyle}>Matches</div>
-                <div class='tournament-scores' style={stateStyle}>Scores</div>
+                <div class='tournament-matches' style={stateStyle}>
+                    <Link to='/tournament/matches'>Matches</Link>
+                </div>
+                <div class='tournament-scores' style={stateStyle}>
+                    <Link to='/tournament/scores'>Scores</Link>
+                </div>
             </div>
         );
     }

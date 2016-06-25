@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-export class TournamentType extends React.Component<{}, {}> {
+export class TournamentMatches extends React.Component<{}, {}> {
     public constructor() {
         super();
     }
     public render() {
         return (
-            <div>Type</div>
+            <div>Matches</div>
         );
     }
 }

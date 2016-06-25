@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;    
+}
+
 body {
     margin: 0;
     font-family: Lato, Calibri;
@@ -9,4 +13,45 @@ body {
     background: #f0f0f0;
     font-size: 23pt;
     color: #333;
+}
+
+.option {
+    display: inline-block;
+    width: 200px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 3px #333;
+    color: #333;
+}
+
+.option.active {
+    background: #09f;
+    color: white;
+}
+
+#members {
+    text-align: center;
+}
+
+#members input, 
+#members button,
+#members div.member div {
+    text-align: left;    
+    padding: 3px 6px;
+    margin: 5px;
+    font-size:16px;
+    width: 200px;
+    display: inline-block;    
+}
+
+#members button {
+    text-align: center;
+    width: 150px;
+}
+
+#members div.member div {
+    border-bottom: 1px solid #555;
 }

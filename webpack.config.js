@@ -8,7 +8,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
-        app: './src/App.tsx',
+        app: './src/main.tsx',
         tests: glob.sync('./src/**/*-spec.ts')
     },
     output: {
@@ -38,9 +38,10 @@ module.exports = {
             dry: false
         }),
         new CopyWebpackPlugin([
-            { from: './node_modules/react/dist/react.js', to: './lib/react.js' },
+            { from: './node_modules/react/dist/react.js', to: './lib/react.js' },          
             { from: './node_modules/react-dom/dist/react-dom.js', to: './lib/react-dom.js' },
             { from: './node_modules/react-router/umd/ReactRouter.min.js', to: './lib/react-router.min.js' },
+            { from: './node_modules/react-redux/dist/react-redux.min.js', to: './lib/react-redux.min.js' },
             { from: './src/styles/style.css', to: './style.css' },
         ]),
     ],

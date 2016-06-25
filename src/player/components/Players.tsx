@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { Link } from 'react-router';
-
 
 export class Players extends React.Component<{}, {}> {
     public render() {
@@ -11,7 +9,6 @@ export class Players extends React.Component<{}, {}> {
                     <div class='list'></div>
                 </div>
             </div>
-
         );
     }
 }
