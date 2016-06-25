@@ -7,6 +7,8 @@ import { Store, createStore } from 'redux';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { browserHistory } from 'react-router';
 import Storage from './storage';
+import { assign } from 'lodash';
+import IState from './main/model';
 
 const storage = new Storage('tournament');
 storage.fetch().then((data = {}) => {
@@ -14,7 +16,7 @@ storage.fetch().then((data = {}) => {
     const history = syncHistoryWithStore(browserHistory, store);
 
     store.subscribe(() => {
-        storage.save(store.getState());
+        storage.save(filterSavedData(store.getState()));
     });
 
     ReactDOM.render(
@@ -24,3 +26,9 @@ storage.fetch().then((data = {}) => {
         document.querySelector('main')
     );
 });
+
+function filterSavedData(data: IState) {
+    return {
+        tournament: data.tournament,
+    };
+}

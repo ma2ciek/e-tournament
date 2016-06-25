@@ -1,7 +1,7 @@
 import * as React from 'react';
 import BinaryNode from '../../../util/TreeNode';
 import SVGCreator from '../../../util/SVGCreator';
-import { shuffle } from '../../../util/common';
+import { shuffle, Segment, log } from '../../../util/common';
 import { IMember } from '../../model';
 
 export interface EliminationTreeProps {
@@ -20,11 +20,13 @@ export class EliminationTree extends React.Component<EliminationTreeProps, {}> {
 
     protected nodeList: BinaryNode<TreeData>[] = [this.root];
 
-    protected linePoints: any[] = [];
+    protected segments: Segment[] = [];
 
     public render() {
         return (
-            <svg width='1000' height='1000'>
+            <svg
+                width={ this.calculateWidth() }
+                height={ this.calculateHeight() }>
                 { this.renderLines() }
                 { this.renderPlayers() }
             </svg>
@@ -32,7 +34,7 @@ export class EliminationTree extends React.Component<EliminationTreeProps, {}> {
     }
 
     public renderLines() {
-        return this.linePoints
+        return this.segments
             .map(points => SVGCreator.createLineBetweenPoints(points.p1, points.p2))
             .map(line => <path d = {line} key = {Math.random() } strokeWidth= '3' stroke= 'green' />);
     }
@@ -47,6 +49,10 @@ export class EliminationTree extends React.Component<EliminationTreeProps, {}> {
             </text>
         );
     }
+
+    protected calculateWidth() { return 0; }
+
+    protected calculateHeight() { return 0; }
 }
 
 interface TreeData {
@@ -55,43 +61,45 @@ interface TreeData {
 }
 
 interface IPosition {
-    x: number
+    x: number;
     y: number;
     width: number;
 }
 
 export class SingleEliminationTree extends EliminationTree {
+    private depth: number;
+
     public componentWillMount() {
         const members = this.props.members;
-        const maxDepth = Math.ceil(Math.log2(members.length));
-        this.createBinaryTree(maxDepth);
-        this.createVisualGraph(maxDepth);
-        this.fillGraphWithMembers(maxDepth);
+        this.depth = Math.ceil(log(2)(members.length));
+        this.createBinaryTree();
+        this.createVisualGraph();
+        this.fillGraphWithMembers();
     }
 
-    private createBinaryTree(size: number) {
+    private createBinaryTree() {
         this.root.data = {
-            position: this.getPosition({ index: 0, invDepth: size }),
+            position: this.getPosition({ index: 0, invDepth: this.depth }),
             member: null,
         };
-        this.addNodes(this.root, size);
+        this.addNodes(this.root);
     }
 
-    private addNodes(parent: BinaryNode<TreeData>, maxDepth: number) {
-        if (parent.getDepth() >= maxDepth)
+    private addNodes(parent: BinaryNode<TreeData>) {
+        if (parent.getDepth() >= this.depth)
             return;
 
-        this.createChild(parent, maxDepth, true);
-        this.createChild(parent, maxDepth, false);
+        this.createChild(parent, true);
+        this.createChild(parent, false);
     }
 
-    private createChild(parent: BinaryNode<TreeData>, maxDepth: number, first: boolean) {
+    private createChild(parent: BinaryNode<TreeData>, first: boolean) {
         const data = this.getPosition({
-            index: parent.getAbsoluteIndex() + (first ? 0 : (1 << parent.getDepth())),
-            invDepth: maxDepth - parent.getDepth() - 1,
+            index: parent.getAbsoluteIndex() * 2 + (first ? 0 : 1),
+            invDepth: this.depth - parent.getDepth() - 1,
         });
         const child = parent.addChild({ position: data, member: null });
-        this.addNodes(child, maxDepth);
+        this.addNodes(child);
         this.nodeList.push(child);
     }
 
@@ -103,24 +111,49 @@ export class SingleEliminationTree extends EliminationTree {
         };
     }
 
-    private createVisualGraph(maxDepth: number) {
+    private createVisualGraph() {
         for (const node of this.nodeList) {
             this.drawHorizontalLine(node.data.position.x, node.data.position.y, node.data.position.width);
         }
+        this.drawVerticalLines();
     }
 
     private drawHorizontalLine(x: number, y: number, length: number) {
-        this.linePoints.push({
+        this.segments.push({
             p1: { x: x, y },
-            p2: { x: x + length, y }
+            p2: { x: x + length, y },
         });
     }
 
-    private fillGraphWithMembers(maxDepth: number) {
+    private drawVerticalLines() {
+        this.nodeList.forEach(node => {
+            const children = node.getChildren();
+            if (children.length === 0)
+                return;
+
+            const pos1 = children[0].data.position;
+            const pos2 = children[1].data.position;
+
+            this.segments.push({
+                p1: { x: pos1.x + pos1.width, y: pos1.y },
+                p2: { x: pos2.x + pos2.width, y: pos2.y },
+            });
+        });
+    }
+
+    private fillGraphWithMembers() {
         const _members = shuffle(this.props.members);
         this.nodeList
-            .filter(node => node.getDepth() === maxDepth)
+            .filter(node => node.getDepth() === this.depth)
             .forEach(node => node.data.member = _members.pop());
+    }
+
+    protected calculateWidth() {
+        return (this.depth + 1) * 150 + 100;
+    }
+
+    protected calculateHeight() {
+        return (1 << this.depth) * 100 + 100;
     }
 }
 

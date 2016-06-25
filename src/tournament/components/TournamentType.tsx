@@ -9,7 +9,6 @@ const disciplines = [
     'Rugby',
 ];
 
-
 export const tournamentTypes = {
     SINGLE_ELIMINATION: 'Single Elimination',
     DOUBLE_ELIMINATION: 'Double Elimination',
@@ -30,7 +29,7 @@ interface TournamentTypeProps {
 }
 
 export const TournamentType = ({ disciplineChange, tournamentTypeChange, type, discipline}: TournamentTypeProps) => (
-    <div style={{ textAlign: 'center' }}>
+    <div>
         <h2>Discipline</h2>
         <Select options={disciplines} onChange={disciplineChange} selected={discipline}/>
         <h2>Tournament type </h2>

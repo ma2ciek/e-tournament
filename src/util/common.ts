@@ -2,6 +2,16 @@ export interface IDictionary<T> {
     [name: string]: T;
 }
 
+export interface Point {
+    x: number;
+    y: number;
+}
+
+export interface Segment {
+    p1: Point;
+    p2: Point;
+}
+
 export function extend(src: IDictionary<{}>, ...dest: IDictionary<{}>[]) {
     for (const d of dest) {
         for (const prop in d) {
@@ -11,12 +21,6 @@ export function extend(src: IDictionary<{}>, ...dest: IDictionary<{}>[]) {
         }
     }
 }
-
-export interface Point {
-    x: number;
-    y: number;
-}
-
 
 // Fisher–Yates shuffle
 export function shuffle(arr: any[]) {
@@ -33,4 +37,8 @@ export function shuffle(arr: any[]) {
     }
 
     return result;
+}
+
+export function log(base: number) {
+    return (x: number) => Math.log(x) / Math.log(base);
 }

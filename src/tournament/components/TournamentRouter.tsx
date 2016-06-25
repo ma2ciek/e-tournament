@@ -1,13 +1,12 @@
-import { Router, Route, browserHistory, IndexRoute } from 'react-router';
-import { Tournament } from './Tournament.tsx';
-import { TournamentNew } from './TournamentNew.tsx';
-import TournamentType from './TournamentType.tsx';
 import TournamentMembers from './TournamentMembers.tsx';
 import TournamentPositions from './TournamentPositions.tsx';
-import { TournamentMatches } from './TournamentMatches.tsx';
-import { TournamentScores } from './TournamentScores.tsx';
-
+import TournamentType from './TournamentType.tsx';
 import { NoMatch } from '../../main/components/NoMatch.tsx';
+import { Router, Route, browserHistory, IndexRoute } from 'react-router';
+import { Tournament } from './Tournament.tsx';
+import { TournamentMatches } from './TournamentMatches.tsx';
+import { TournamentNew } from './TournamentNew.tsx';
+import { TournamentScores } from './TournamentScores.tsx';
 
 import * as React from 'react';
 
