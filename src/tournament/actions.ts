@@ -11,6 +11,8 @@ export const MEMBER_POSITION_CHANGED = 'MEMBER_POSITION_CHANGED';
 export const SHUFFLE_START_POSITION = 'SHUFFLE_START_POSITION';
 export const ZOOM_IN = 'ZOOM_IN';
 export const ZOOM_OUT = 'ZOOM_OUT';
+export const ZOOM_RESET = 'ZOOM_RESET';
+export const RESET_START_POSITION = 'RESET_START_POSITION';
 
 export const nextStage = createAction<number>(
     NEXT_STAGE,
@@ -57,4 +59,12 @@ export const zoomIn = createAction<void>(
 
 export const zoomOut = createAction<void>(
     ZOOM_OUT
+);
+
+export const resetZoom = createAction<void>(
+    ZOOM_RESET
+);
+
+export const resetStartPosition = createAction<void>(
+    RESET_START_POSITION
 );

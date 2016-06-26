@@ -3,7 +3,7 @@ import { EliminationTree, SingleEliminationTree, DoubleEliminationTree, Repechag
 import { IMember } from '../model';
 import { connect } from 'react-redux';
 import { tournamentTypes } from './TournamentType.tsx';
-import { memberPositionChanged, shuffleStartPosition, zoomIn, zoomOut } from '../actions';
+import { memberPositionChanged, shuffleStartPosition, zoomIn, zoomOut, resetZoom, resetStartPosition } from '../actions';
 import IState from '../../main/model';
 
 interface TournamentPositionsProps {
@@ -13,6 +13,8 @@ interface TournamentPositionsProps {
     zoom: number;
     zoomIn: any;
     zoomOut: any;
+    resetZoom: any;
+    resetStartPosition: any;
 }
 
 class TournamentPositions extends React.Component<TournamentPositionsProps, {}> {
@@ -28,9 +30,12 @@ class TournamentPositions extends React.Component<TournamentPositionsProps, {}> 
             <div id='member-positions'>
                 <h2>Positions</h2>
                 <div>
-                    <button class='fill' onClick={this.props.shuffleStartPosition}>Fill with random players</button>
-                    <button onClick={this.props.zoomIn}>Zoom In</button>
-                    <button onClick={this.props.zoomOut}>Zoom Out</button>
+                    <button onClick={this.props.shuffleStartPosition}>Fill with random players</button>
+                    <button onClick={this.props.resetStartPosition}>Remove all players</button>
+
+                    <button onClick={this.props.zoomIn}>+</button>
+                    <button onClick={this.props.zoomOut}>-</button>
+                    <button onClick={this.props.resetZoom} title='Reset zoom'>Reset</button>
                     <span>Zoom: {Math.round(this.props.zoom * 100) + '%'}</span>
                 </div>
                 <Tree />
@@ -57,6 +62,6 @@ export default connect(
         members: state.tournament.members,
         type: state.tournament.tournamentType,
         zoom: state.tournament.zoom,
-    }), { shuffleStartPosition, zoomIn, zoomOut }
+    }), { shuffleStartPosition, zoomIn, zoomOut, resetZoom, resetStartPosition }
 )(TournamentPositions);
 

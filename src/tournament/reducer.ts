@@ -8,6 +8,8 @@ import {
     SET_TOURNAMENT_TYPE,
     ZOOM_IN,
     ZOOM_OUT,
+    ZOOM_RESET,
+    RESET_START_POSITION,
 } from './actions';
 
 import { assign } from 'lodash';
@@ -76,6 +78,12 @@ export default handleActions<IState, {}>({
         });
     },
 
+    [RESET_START_POSITION]: (state: IState, action: Action<{}>): IState => {
+        return <IState>assign({}, state, {
+            membersStartPosition: [],
+        });
+    },
+
     [ZOOM_IN]: (state: IState, action: Action<{}>): IState => {
         return <IState>assign({}, state, {
             zoom: state.zoom * 1.1,
@@ -85,6 +93,12 @@ export default handleActions<IState, {}>({
     [ZOOM_OUT]: (state: IState, action: Action<{}>): IState => {
         return <IState>assign({}, state, {
             zoom: state.zoom / 1.1,
+        });
+    },
+
+    [ZOOM_RESET]: (state: IState, action: Action<{}>): IState => {
+        return <IState>assign({}, state, {
+            zoom: 1,
         });
     },
 

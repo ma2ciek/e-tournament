@@ -7,6 +7,38 @@ body {
     font-family: Lato, Calibri;
 }
 
+button {
+    background-color: #fff;
+    color: #09f;
+    border: 1px solid rgba(0, 153, 255, 0.5);
+    box-shadow: 0 0 2px;
+    border-radius: 5px;
+    padding: 3px 10px;
+    margin: 0 10px;
+    cursor: pointer;
+    -webkit-transition: all 0.1s ease-in;
+    -moz-transition: all 0.1s ease-in;
+    transition: all 0.1s ease-in;
+    font-size: 13pt;
+    min-width: 32px;
+}
+
+button:hover {
+    box-shadow: none;
+    background-color: #09f;
+    color: white;
+}
+
+button:active {
+    background-color: #00f;    
+}
+
+button:focus {
+    border: 1px solid rgba(0, 0, 255, 0.5);    
+    box-shadow: 0 0 2px #00f;
+    outline: none;
+}
+
 ._404 {
     text-align: center;
     padding: 50px 50px;

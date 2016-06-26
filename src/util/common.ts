@@ -7,10 +7,7 @@ export interface Point {
     y: number;
 }
 
-export interface Segment {
-    p1: Point;
-    p2: Point;
-}
+export type Segment = Point[];
 
 export function extend(src: IDictionary<{}>, ...dest: IDictionary<{}>[]) {
     for (const d of dest) {
