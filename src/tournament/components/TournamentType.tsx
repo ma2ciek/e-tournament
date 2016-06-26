@@ -5,7 +5,7 @@ import { disciplineChange, tournamentTypeChange } from '../actions';
 const disciplines = [
     'Football',
     'Voleyball',
-    'BasketBall',
+    'Basketball',
     'Rugby',
 ];
 

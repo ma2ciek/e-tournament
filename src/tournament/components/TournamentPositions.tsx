@@ -3,23 +3,37 @@ import { EliminationTree, SingleEliminationTree, DoubleEliminationTree, Repechag
 import { IMember } from '../model';
 import { connect } from 'react-redux';
 import { tournamentTypes } from './TournamentType.tsx';
-import { } from '../actions';
+import { memberPositionChanged, shuffleStartPosition, zoomIn, zoomOut } from '../actions';
+import IState from '../../main/model';
 
 interface TournamentPositionsProps {
     members: IMember[];
     type: string;
+    shuffleStartPosition: any;
+    zoom: number;
+    zoomIn: any;
+    zoomOut: any;
 }
 
 class TournamentPositions extends React.Component<TournamentPositionsProps, {}> {
-    public constructor() {
-        super();
-    }
+
     public render() {
-        const Tree = this.getEliminationTree();
+        const Tree = connect((state: IState) => ({
+            members: state.tournament.members,
+            membersStartPosition: state.tournament.membersStartPosition,
+            zoom: state.tournament.zoom,
+        }), { memberPositionChanged })(this.getEliminationTree());
+
         return (
             <div id='member-positions'>
                 <h2>Positions</h2>
-                <Tree members = {this.props.members}/>
+                <div>
+                    <button class='fill' onClick={this.props.shuffleStartPosition}>Fill with random players</button>
+                    <button onClick={this.props.zoomIn}>Zoom In</button>
+                    <button onClick={this.props.zoomOut}>Zoom Out</button>
+                    <span>Zoom: {Math.round(this.props.zoom * 100) + '%'}</span>
+                </div>
+                <Tree />
             </div>
         );
     }
@@ -39,6 +53,10 @@ class TournamentPositions extends React.Component<TournamentPositionsProps, {}> 
 }
 
 export default connect(
-    state => ({ members: state.tournament.members, type: state.tournament.tournamentType })
+    (state: IState) => ({
+        members: state.tournament.members,
+        type: state.tournament.tournamentType,
+        zoom: state.tournament.zoom,
+    }), { shuffleStartPosition, zoomIn, zoomOut }
 )(TournamentPositions);
 

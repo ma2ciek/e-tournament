@@ -11,6 +11,8 @@ export interface IState {
     discipline?: string;
     tournamentType?: string;
     members: IMember[];
+    membersStartPosition: IMember[];
+    zoom: number;
 };
 
 export default IState;

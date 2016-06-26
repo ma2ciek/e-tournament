@@ -1,12 +1,22 @@
+// https://css-tricks.com/scale-svg/
+
 import * as React from 'react';
 import BinaryNode from '../../../util/TreeNode';
 import SVGCreator from '../../../util/SVGCreator';
-import { shuffle, Segment, log } from '../../../util/common';
+import { Segment, log } from '../../../util/common';
 import { IMember } from '../../model';
+import { Action } from 'redux-actions';
 
 export interface EliminationTreeProps {
     members: IMember[];
+    membersStartPosition: IMember[];
+    memberPositionChanged: (arr: IMember[]) => Action<IMember[]>;
+    zoom: number;
 }
+
+const NODE_WIDTH = 150;
+const NODE_HEIGHT = 50;
+const MARGIN = 50;
 
 export class EliminationTree extends React.Component<EliminationTreeProps, {}> {
     protected root = new BinaryNode<TreeData>({
@@ -20,26 +30,28 @@ export class EliminationTree extends React.Component<EliminationTreeProps, {}> {
 
     protected nodeList: BinaryNode<TreeData>[] = [this.root];
 
-    protected segments: Segment[] = [];
-
     public render() {
+        console.log(this.props.zoom);
         return (
             <svg
-                width={ this.calculateWidth() }
-                height={ this.calculateHeight() }>
+                viewBox={ 0 + ' ' + 0 + ' ' + this.calculateWidth() + ' ' + this.calculateHeight() }
+                width = {this.calculateWidth() * this.props.zoom}
+                height = {this.calculateHeight() * this.props.zoom}
+                preserveAspectRatio='xMidYMid meet'>
                 { this.renderLines() }
-                { this.renderPlayers() }
+                { this.renderMembers() }
             </svg>
         );
     }
 
     public renderLines() {
-        return this.segments
+        return this.createVisualGraph()
             .map(points => SVGCreator.createLineBetweenPoints(points.p1, points.p2))
-            .map(line => <path d = {line} key = {Math.random() } strokeWidth= '3' stroke= 'green' />);
+            .map(line => <path d = {line} key = {Math.random() } strokeWidth = '3' stroke= 'green' />);
     }
 
-    public renderPlayers() {
+    public renderMembers() {
+        this.fillGraphWithMembers();
         return this.nodeList.filter(node => !!node.data.member).map(node =>
             <text
                 x = {node.data.position.x}
@@ -51,8 +63,10 @@ export class EliminationTree extends React.Component<EliminationTreeProps, {}> {
     }
 
     protected calculateWidth() { return 0; }
+    protected createVisualGraph(): Segment[] { return []; }
 
     protected calculateHeight() { return 0; }
+    protected fillGraphWithMembers() { };
 }
 
 interface TreeData {
@@ -73,8 +87,6 @@ export class SingleEliminationTree extends EliminationTree {
         const members = this.props.members;
         this.depth = Math.ceil(log(2)(members.length));
         this.createBinaryTree();
-        this.createVisualGraph();
-        this.fillGraphWithMembers();
     }
 
     private createBinaryTree() {
@@ -105,55 +117,54 @@ export class SingleEliminationTree extends EliminationTree {
 
     private getPosition(o: { index: number, invDepth: number }): IPosition {
         return {
-            x: o.invDepth * 150 + 50,
-            y: (o.index * (1 << (o.invDepth + 1)) + (1 << o.invDepth)) * 50 + 50,
-            width: 150,
+            x: o.invDepth * NODE_WIDTH + MARGIN,
+            y: (o.index * (1 << (o.invDepth + 1)) + (1 << o.invDepth)) * NODE_HEIGHT + MARGIN,
+            width: NODE_WIDTH,
         };
     }
 
-    private createVisualGraph() {
-        for (const node of this.nodeList) {
-            this.drawHorizontalLine(node.data.position.x, node.data.position.y, node.data.position.width);
-        }
-        this.drawVerticalLines();
+    protected createVisualGraph() {
+        return [
+            ...this.createHorizontalLine(),
+            ...this.createVerticalLines()
+        ];
     }
 
-    private drawHorizontalLine(x: number, y: number, length: number) {
-        this.segments.push({
-            p1: { x: x, y },
-            p2: { x: x + length, y },
-        });
+    private createHorizontalLine() {
+        return this.nodeList.map(node => ({
+            p1: { x: node.data.position.x, y: node.data.position.y },
+            p2: { x: node.data.position.x + node.data.position.width, y: node.data.position.y },
+        }));
     }
 
-    private drawVerticalLines() {
-        this.nodeList.forEach(node => {
-            const children = node.getChildren();
-            if (children.length === 0)
-                return;
+    private createVerticalLines() {
+        return this.nodeList
+            .filter(node => node.getChildren().length > 0)
+            .map(node => {
+                const children = node.getChildren();
 
-            const pos1 = children[0].data.position;
-            const pos2 = children[1].data.position;
+                const pos1 = children[0].data.position;
+                const pos2 = children[1].data.position;
 
-            this.segments.push({
-                p1: { x: pos1.x + pos1.width, y: pos1.y },
-                p2: { x: pos2.x + pos2.width, y: pos2.y },
+                return {
+                    p1: { x: pos1.x + pos1.width, y: pos1.y },
+                    p2: { x: pos2.x + pos2.width, y: pos2.y },
+                };
             });
-        });
     }
 
-    private fillGraphWithMembers() {
-        const _members = shuffle(this.props.members);
+    protected fillGraphWithMembers() {
         this.nodeList
             .filter(node => node.getDepth() === this.depth)
-            .forEach(node => node.data.member = _members.pop());
+            .forEach((node, i) => node.data.member = this.props.membersStartPosition[i]);
     }
 
     protected calculateWidth() {
-        return (this.depth + 1) * 150 + 100;
+        return (this.depth + 1) * NODE_WIDTH + MARGIN * 2;
     }
 
     protected calculateHeight() {
-        return (1 << this.depth) * 100 + 100;
+        return (1 << this.depth) * NODE_HEIGHT * 2 + MARGIN * 2;
     }
 }
 

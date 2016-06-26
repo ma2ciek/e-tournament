@@ -1,13 +1,27 @@
-import { ADD_MEMBER, DELETE_MEMBER, NEXT_STAGE, PREV_STAGE, SET_DISCIPLINE, SET_TOURNAMENT_TYPE } from './actions';
+import {
+    SHUFFLE_START_POSITION,
+    MEMBER_POSITION_CHANGED,
+    ADD_MEMBER, DELETE_MEMBER,
+    NEXT_STAGE,
+    PREV_STAGE,
+    SET_DISCIPLINE,
+    SET_TOURNAMENT_TYPE,
+    ZOOM_IN,
+    ZOOM_OUT,
+} from './actions';
+
 import { assign } from 'lodash';
 import { handleActions, Action } from 'redux-actions';
 import { IState, IMember } from './model';
+import { shuffle } from '../util/common';
 
 const initialState: IState = {
     stage: 0,
     discipline: null,
     tournamentType: null,
     members: [],
+    membersStartPosition: [],
+    zoom: 1,
 };
 
 export default handleActions<IState, {}>({
@@ -47,6 +61,30 @@ export default handleActions<IState, {}>({
             members: state.members
                 .filter(m => m !== action.payload)
                 .sort((m1, m2) => m1.lastName.localeCompare(m2.lastName)),
+        });
+    },
+
+    [MEMBER_POSITION_CHANGED]: (state: IState, action: Action<IMember[]>): IState => {
+        return <IState>assign({}, state, {
+            membersStartPosition: action.payload,
+        });
+    },
+
+    [SHUFFLE_START_POSITION]: (state: IState, action: Action<{}>): IState => {
+        return <IState>assign({}, state, {
+            membersStartPosition: shuffle(state.members),
+        });
+    },
+
+    [ZOOM_IN]: (state: IState, action: Action<{}>): IState => {
+        return <IState>assign({}, state, {
+            zoom: state.zoom * 1.1,
+        });
+    },
+
+    [ZOOM_OUT]: (state: IState, action: Action<{}>): IState => {
+        return <IState>assign({}, state, {
+            zoom: state.zoom / 1.1,
         });
     },
 
