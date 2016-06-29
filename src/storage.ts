@@ -1,18 +1,16 @@
-export default class Storage {
+export default class Storage<T> {
     private storage = window.localStorage;
 
     constructor(private name: string) {
     }
 
-    public fetch() {
-        return new Promise((res, rej) => {
-            const data = this.storage.getItem(this.name);
-            const parsedData = (data ? JSON.parse(data) : {});
-            res(parsedData);
-        });
+    public get() {
+        const data = this.storage.getItem(this.name);
+        const parsedData = data && JSON.parse(data);
+        return <T>parsedData;
     }
 
-    public save(data: {}) {
+    public save(data: T) {
         return new Promise((res, rej) => {
             try {
                 this.setData(data);
@@ -23,7 +21,7 @@ export default class Storage {
         });
     }
 
-    private setData(data: {}) {
+    private setData(data: T) {
         const stringifiedData = JSON.stringify(data);
         this.storage.setItem(this.name, stringifiedData);
     }

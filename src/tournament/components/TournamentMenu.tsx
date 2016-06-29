@@ -16,6 +16,9 @@ export class TournamentMenu extends React.Component<{}, {}> {
     public render() {
         return (
             <div style={style} >
+                <div class='tournament-home' style={stateStyle}>
+                    <Link to='/tournament'>Home</Link>
+                </div>
                 <div class='tournament-type' style={stateStyle}>
                     <Link to='/tournament/type'>Type</Link>
                 </div>

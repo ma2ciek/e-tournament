@@ -1,5 +1,5 @@
 import { createAction } from 'redux-actions';
-import { IMember } from './model';
+import { IMember, ITournamentState } from './model';
 
 export const NEXT_STAGE = 'NEXT_STAGE';
 export const PREV_STAGE = 'PREV_STAGE';
@@ -13,6 +13,18 @@ export const ZOOM_IN = 'ZOOM_IN';
 export const ZOOM_OUT = 'ZOOM_OUT';
 export const ZOOM_RESET = 'ZOOM_RESET';
 export const RESET_START_POSITION = 'RESET_START_POSITION';
+export const LOAD_TOURNAMENT_DATA = 'LOAD_TOURNAMENT_DATA';
+export const CHANGE_TOURNAMENT = 'CHANGE_TOURNAMENT';
+
+export const changeTournament = createAction<string>(
+    CHANGE_TOURNAMENT,
+    (name: string) => name
+);
+
+export const loadTournament = createAction<ITournamentState>(
+    LOAD_TOURNAMENT_DATA,
+    (data: ITournamentState) => data
+);
 
 export const nextStage = createAction<number>(
     NEXT_STAGE,

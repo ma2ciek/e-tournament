@@ -31,7 +31,6 @@ module.exports = {
     },
 
     plugins: [
-        // new Visualizer(),
         new CleanWebpackPlugin(['build'], {
             root: '/home/maciek/data/www/tournaments',
             verbose: true,
@@ -44,6 +43,7 @@ module.exports = {
             { from: './node_modules/react-redux/dist/react-redux.min.js', to: './lib/react-redux.min.js' },
             { from: './src/styles/style.css', to: './style.css' },
         ]),
+        // new webpack.optimize.UglifyJsPlugin()
     ],
 
     tslint: {

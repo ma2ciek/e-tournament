@@ -50,4 +50,8 @@ export default class BinaryNode<T> {
     public getChildren() {
         return this.children;
     }
+
+    public isEmpty() {
+        return this.children.length === 0;
+    }
 }

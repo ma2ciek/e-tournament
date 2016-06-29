@@ -1,6 +1,6 @@
 import BinaryNode from '../../../util/TreeNode';
-import { EliminationTree, TreeData, IPosition } from './EliminationTree.tsx';
-import { log, Segment } from '../../../util/common';
+import { EliminationTree, TreeData } from './EliminationTree.tsx';
+import { log, Segment, IPosition} from '../../../util/common';
 
 const NODE_WIDTH = 200;
 const NODE_HEIGHT = 50;
@@ -66,7 +66,7 @@ export class SingleEliminationTree extends EliminationTree {
 
     private createVerticalLines(): Segment[] {
         return this.nodeList
-            .filter(node => node.getChildren().length > 0)
+            .filter(node => !node.isEmpty())
             .map(node => {
                 const children = node.getChildren();
 

@@ -1,10 +1,10 @@
 import * as React from 'react';
+import IState from '../../main/model';
 import { EliminationTree, SingleEliminationTree, DoubleEliminationTree, RepechageTree } from './tree/EliminationTree.tsx';
 import { IMember } from '../model';
 import { connect } from 'react-redux';
-import { tournamentTypes } from './TournamentType.tsx';
 import { memberPositionChanged, shuffleStartPosition, zoomIn, zoomOut, resetZoom, resetStartPosition } from '../actions';
-import IState from '../../main/model';
+import { tournamentTypes } from './TournamentType.tsx';
 
 interface TournamentPositionsProps {
     members: IMember[];
@@ -64,4 +64,3 @@ export default connect(
         zoom: state.tournament.zoom,
     }), { shuffleStartPosition, zoomIn, zoomOut, resetZoom, resetStartPosition }
 )(TournamentPositions);
-

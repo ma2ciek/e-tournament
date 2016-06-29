@@ -3,7 +3,9 @@ import BinaryNode from '../../../util/TreeNode';
 import SVGCreator from '../../../util/SVGCreator.tsx';
 import { Action } from 'redux-actions';
 import { IMember } from '../../model';
+import { IPosition } from '../../../util/common';
 import { Segment } from '../../../util/common';
+import NodeMember from './NodeMember.tsx';
 
 export interface EliminationTreeProps {
     members: IMember[];
@@ -12,16 +14,27 @@ export interface EliminationTreeProps {
     zoom: number;
 }
 
+export interface EliminationTreeState {
+    selected?: BinaryNode<TreeData>;
+    hovered?: BinaryNode<TreeData>;
+}
+
 export interface TreeData {
     position: IPosition;
     member: IMember;
 }
 
-const COLOR = '#09f';
-const LINE_WIDTH = 3;
-const BACKGROUND_COLOR = 'white';
+export const options = {
+    BACKGROUND_COLOR: 'white',
+    COLOR: '#09f',
+    LINE_WIDTH: 2,
+};
 
-export class EliminationTree extends React.Component<EliminationTreeProps, {}> {
+export const COLOR = '#09f';
+export const LINE_WIDTH = 2;
+export const BACKGROUND_COLOR = 'white';
+
+export class EliminationTree extends React.Component<EliminationTreeProps, EliminationTreeState> {
     protected root = new BinaryNode<TreeData>({
         parent: null,
         data: {
@@ -33,12 +46,17 @@ export class EliminationTree extends React.Component<EliminationTreeProps, {}> {
 
     protected nodeList: BinaryNode<TreeData>[] = [this.root];
 
+    constructor() {
+        super();
+        this.state = { selected: null, hovered: null };
+    }
+
     public render() {
         return (
             <svg
                 viewBox={ 0 + ' ' + 0 + ' ' + this.calculateWidth() + ' ' + this.calculateHeight() }
-                width = {this.calculateWidth() * this.props.zoom}
-                height = {this.calculateHeight() * this.props.zoom}
+                width={ this.calculateWidth() * this.props.zoom }
+                height={ this.calculateHeight() * this.props.zoom }
                 preserveAspectRatio='xMidYMid meet'>
                 { this.renderLines() }
                 { this.renderMembers() }
@@ -61,25 +79,36 @@ export class EliminationTree extends React.Component<EliminationTreeProps, {}> {
 
     public renderMembers() {
         this.fillGraphWithMembers();
-        return this.nodeList.filter(node => !node.getChildren().length).map(node =>
-            this.renderMember(node)
-        );
+        return this.nodeList
+            .filter(node => node.isEmpty())
+            .map((node, index) => (
+                <NodeMember
+                    node = { node }
+                    index = { index }
+                    key = { index }
+                    replace = { this.replace.bind(this) }
+                    selected = { this.state.selected === node }
+                    hovered = { this.state.hovered === node }
+                    members = { this.props.members }
+                    options = { options }
+                    onSelect = { n => this.setState({ selected: n }) }
+                    onHover = { n => this.setState({ hovered: n }) }
+                    />
+            ));
     }
 
-    private renderMember(node: BinaryNode<TreeData>) {
-        return <g key = { Math.random() } cursor = 'pointer'>
-            { SVGCreator.createTextInRect({
-                width: node.data.position.width * 3 / 4,
-                height: node.data.position.height,
-                centerX: node.data.position.x + node.data.position.width / 2,
-                centerY: node.data.position.y - node.data.position.height / 2,
-                borderRadius: 10,
-                color: COLOR,
-                bg: BACKGROUND_COLOR,
-                text: node.data.member && node.data.member.firstName + ' ' + node.data.member.lastName,
-                borderWidth: LINE_WIDTH,
-            }) }
-        </g>;
+    private replace(currentNode: BinaryNode<TreeData>, nextMember: IMember) {
+        if (currentNode.data.member === nextMember)
+            return;
+
+        const newStartPosition = this.getStartPosition().map((node, index) => {
+            if (node.data.member && node.data.member.id && node.data.member.id === nextMember.id)
+                return undefined;
+            if (index === currentNode.getAbsoluteIndex())
+                return nextMember;
+            return node.data.member;
+        });
+        this.props.memberPositionChanged(newStartPosition);
     }
 
     protected calculateWidth() { return 0; }
@@ -87,14 +116,10 @@ export class EliminationTree extends React.Component<EliminationTreeProps, {}> {
 
     protected calculateHeight() { return 0; }
     protected fillGraphWithMembers() { };
-}
 
-
-export interface IPosition {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+    protected getStartPosition() {
+        return this.nodeList.filter(node => node.isEmpty());
+    }
 }
 
 export class DoubleEliminationTree extends EliminationTree {

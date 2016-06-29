@@ -68,6 +68,11 @@ main {
     text-align: center;
 }
 
+#tournament-home {
+    display: flex;
+    justify-content: space-around;
+}
+
 #members input, 
 #members button,
 #members div.member div {
@@ -86,4 +91,16 @@ main {
 
 #members div.member div {
     border-bottom: 1px solid #555;
+}
+
+
+
+g:focus {
+    outline: none;
+}
+
+rect, text {
+    -webkit-transition: all 0.15s ease-in-out;
+    -moz-transition: all 0.15s ease-in-out;
+    transition: all 0.15s ease-in-out;
 }

@@ -7,6 +7,12 @@ export interface Point {
     y: number;
 }
 
+export interface IPosition extends Point {
+    width: number;
+    height: number;
+}
+
+
 export type Segment = Point[];
 
 export function extend(src: IDictionary<{}>, ...dest: IDictionary<{}>[]) {
