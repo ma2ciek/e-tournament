@@ -120,6 +120,10 @@ export class EliminationTree extends React.Component<EliminationTreeProps, Elimi
     protected getStartPosition() {
         return this.nodeList.filter(node => node.isEmpty());
     }
+
+    public shuffleStartPosition() {
+
+    }
 }
 
 export class DoubleEliminationTree extends EliminationTree {

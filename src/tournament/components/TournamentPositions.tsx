@@ -18,7 +18,6 @@ interface TournamentPositionsProps {
 }
 
 class TournamentPositions extends React.Component<TournamentPositionsProps, {}> {
-
     public render() {
         const Tree = connect((state: IState) => ({
             members: state.tournament.members,
@@ -29,9 +28,9 @@ class TournamentPositions extends React.Component<TournamentPositionsProps, {}> 
         return (
             <div id='member-positions'>
                 <h2>Positions</h2>
-                <div>
-                    <button onClick={this.props.shuffleStartPosition}>Fill with random players</button>
-                    <button onClick={this.props.resetStartPosition}>Remove all players</button>
+                <div className='no-print'>
+                    <button onClick={() => this.shuffleStartPosition() }>Fill with random players</button>
+                    <button onClick={() => this.resetStartPosition() }>Remove all players</button>
 
                     <button onClick={this.props.zoomIn}>+</button>
                     <button onClick={this.props.zoomOut}>-</button>
@@ -41,6 +40,14 @@ class TournamentPositions extends React.Component<TournamentPositionsProps, {}> 
                 <Tree />
             </div>
         );
+    }
+
+    private shuffleStartPosition() {
+        this.props.shuffleStartPosition();
+    }
+
+    private resetStartPosition() {
+        this.props.resetStartPosition();
     }
 
     private getEliminationTree(): typeof EliminationTree {
